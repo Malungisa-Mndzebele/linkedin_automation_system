@@ -1,0 +1,16 @@
+{
+  "linkedin_email": "your-email@example.com",
+  "linkedin_password": "your-password-here",
+  "job_keywords": ["Data Analyst", "Business Analyst", "Data Scientist"],
+  "preferred_location": "San Francisco, CA",
+  "max_applications_per_day": 10,
+  "experience_years": 3,
+  "skills": ["Python", "SQL", "Tableau", "Excel", "Statistics"],
+  "education": ["Bachelor's Degree in Computer Science"],
+  "certifications": ["Google Analytics", "Tableau Desktop"],
+  "easy_apply_only": true,
+  "remote_preference": true,
+  "experience_level": "mid",
+  "company_size": "medium",
+  "preferred_industries": ["Technology", "Finance", "Healthcare"]
+}

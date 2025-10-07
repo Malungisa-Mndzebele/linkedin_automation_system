@@ -17,7 +17,7 @@ This project implements an automated LinkedIn job application system using Pytho
 
 ### Primary User: Data Analyst Job Seeker
 - **Name**: Malungisa Mndzebele
-- **Email**: mndzebelemalungisa@gmail.com
+- **Email**: your-email@example.com
 - **Target Role**: Data Analyst
 - **Application Strategy**: Focus on "Easy Apply" positions for efficiency
 - **Geographic Preference**: Remote/Hybrid positions preferred
@@ -63,7 +63,7 @@ This project implements an automated LinkedIn job application system using Pytho
 email_field = WebDriverWait(driver, 10).until(
     EC.presence_of_element_located((By.ID, "username"))
 )
-email_field.send_keys("mndzebelemalungisa@gmail.com")
+email_field.send_keys("your-email@example.com")
 ```
 
 #### 2. Smart Job Search

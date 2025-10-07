@@ -89,8 +89,8 @@ def main():
         print()
         
         # Pre-configured settings (update these with your actual credentials)
-        email = "mndzebelemalungisa@gmail.com"
-        password = "YOUR_PASSWORD_HERE"  # Replace with actual password
+        email = "your-email@example.com"
+        password = "your-password-here"  # Replace with actual password
         
         # Job search configuration
         keywords = ["analyst", "data", "data analyst"]
@@ -118,9 +118,9 @@ def main():
         print()
         
         # Check if password is set
-        if password == "YOUR_PASSWORD_HERE":
+        if password == "your-password-here":
             print("[ERROR] Please update the password in the script before running")
-            print("Edit non_interactive_automation.py and replace 'YOUR_PASSWORD_HERE' with your actual password")
+            print("Edit non_interactive_automation.py and replace 'your-password-here' with your actual password")
             return
         
         # Create configurations
@@ -280,8 +280,8 @@ def create_environment_config():
     print("Creating environment configuration...")
     
     env_config = {
-        "linkedin_email": "mndzebelemalungisa@gmail.com",
-        "linkedin_password": "YOUR_PASSWORD_HERE",
+        "linkedin_email": "your-email@example.com",
+        "linkedin_password": "your-password-here",
         "job_keywords": ["analyst", "data", "data analyst"],
         "preferred_location": "United States of America",
         "max_applications_per_day": 10,
@@ -373,9 +373,9 @@ def main():
             return
         
         # Check if password is set
-        if config.get('linkedin_password') == 'YOUR_PASSWORD_HERE':
+        if config.get('linkedin_password') == 'your-password-here':
             print("[ERROR] Please update the password in config.json")
-            print("Edit config.json and replace 'YOUR_PASSWORD_HERE' with your actual password")
+            print("Edit config.json and replace 'your-password-here' with your actual password")
             return
         
         print(f"Configuration loaded:")
@@ -600,7 +600,7 @@ Edit `config.json` to update your settings:
 
 ## 🎯 Next Steps
 
-1. **Update Password**: Edit config.json and replace "YOUR_PASSWORD_HERE" with your actual password
+1. **Update Password**: Edit config.json and replace "your-password-here" with your actual password
 2. **Run Automation**: Use `python automated_runner.py`
 3. **Monitor Progress**: Check log files for detailed information
 4. **Adjust Settings**: Modify config.json as needed

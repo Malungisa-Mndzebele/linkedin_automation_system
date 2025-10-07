@@ -55,8 +55,8 @@ python simple_enhanced_main.py
 Edit `config.json` to update your settings:
 ```json
 {
-  "linkedin_email": "mndzebelemalungisa@gmail.com",
-  "linkedin_password": "YOUR_PASSWORD_HERE",
+  "linkedin_email": "your-email@example.com",
+  "linkedin_password": "your-password-here",
   "job_keywords": ["analyst", "data", "data analyst"],
   "preferred_location": "United States of America",
   "max_applications_per_day": 10,
@@ -72,7 +72,7 @@ Edit `config.json` to update your settings:
 
 ## 🎯 Next Steps
 
-1. **Update Password**: Edit `config.json` and replace `"YOUR_PASSWORD_HERE"` with your actual password
+1. **Update Password**: Edit `config.json` and replace `"your-password-here"` with your actual password
 2. **Run Automation**: Use `python automated_runner.py`
 3. **Monitor Progress**: Check log files for detailed information
 4. **Adjust Settings**: Modify `config.json` as needed

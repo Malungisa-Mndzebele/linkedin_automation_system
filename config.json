@@ -1,6 +1,6 @@
 {
-  "linkedin_email": "mndzebelemalungisa@gmail.com",
-  "linkedin_password": "YOUR_PASSWORD_HERE",
+  "linkedin_email": "your-email@example.com",
+  "linkedin_password": "your-password-here",
   "job_keywords": ["analyst", "data", "data analyst"],
   "preferred_location": "United States of America",
   "max_applications_per_day": 10,

@@ -46,7 +46,7 @@ def main():
         print()
         
         # Your specific configuration
-        email = "mndzebelemalungisa@gmail.com"
+        email = "your-email@example.com"
         password = input("Enter your LinkedIn password: ").strip()
         
         # Job search configuration

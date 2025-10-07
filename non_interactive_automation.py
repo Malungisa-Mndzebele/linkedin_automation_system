@@ -47,8 +47,8 @@ def main():
         print()
         
         # Pre-configured settings (update these with your actual credentials)
-        email = "mndzebelemalungisa@gmail.com"
-        password = "YOUR_PASSWORD_HERE"  # Replace with actual password
+        email = "your-email@example.com"
+        password = "your-password-here"  # Replace with actual password
         
         # Job search configuration
         keywords = ["analyst", "data", "data analyst"]
@@ -76,9 +76,9 @@ def main():
         print()
         
         # Check if password is set
-        if password == "YOUR_PASSWORD_HERE":
+        if password == "your-password-here":
             print("[ERROR] Please update the password in the script before running")
-            print("Edit non_interactive_automation.py and replace 'YOUR_PASSWORD_HERE' with your actual password")
+            print("Edit non_interactive_automation.py and replace 'your-password-here' with your actual password")
             return
         
         # Create configurations

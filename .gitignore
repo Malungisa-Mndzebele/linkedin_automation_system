@@ -1,0 +1,143 @@
+# LinkedIn Job Application Automation - Git Ignore File
+
+# Sensitive Information
+*.log
+config.json
+.env
+.env.local
+.env.production
+.env.staging
+*.key
+*.pem
+*.p12
+*.pfx
+
+# User-specific files
+user_config.json
+personal_config.json
+credentials.json
+linkedin_credentials.json
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+linkedin_automation.db
+test.db
+
+# Log files
+*.log
+logs/
+automation_actions.log
+linkedin_automation.log
+enhanced_automation.log
+enhanced_actions.log
+
+# Browser data
+chrome_user_data/
+user_data/
+browser_cache/
+selenium_cache/
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+*.temp
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Chrome driver
+chromedriver*
+geckodriver*
+
+# Session data
+session_data/
+user_sessions/
+
+# Analytics data
+analytics_data/
+user_analytics/
+
+# Screenshots
+screenshots/
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Reports
+reports/
+*.pdf
+*.html
+
+# Test data
+test_data/
+mock_data/
+
+# Configuration backups
+config_backup/
+*.config.bak

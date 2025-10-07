@@ -67,9 +67,9 @@ def main():
             return
         
         # Check if password is set
-        if config.get('linkedin_password') == 'YOUR_PASSWORD_HERE':
+        if config.get('linkedin_password') == 'your-password-here':
             print("[ERROR] Please update the password in config.json")
-            print("Edit config.json and replace 'YOUR_PASSWORD_HERE' with your actual password")
+            print("Edit config.json and replace 'your-password-here' with your actual password")
             return
         
         print(f"Configuration loaded:")

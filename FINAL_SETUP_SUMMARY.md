@@ -80,7 +80,7 @@ python web_dashboard.py
 ```
 
 ### **Your Configuration Summary:**
-- **Email**: mndzebelemalungisa@gmail.com
+- **Email**: your-email@example.com
 - **Keywords**: analyst, data, data analyst
 - **Location**: United States of America
 - **Experience**: 4 years (mid-level)
