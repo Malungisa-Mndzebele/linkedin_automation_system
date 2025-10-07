@@ -1,0 +1,13 @@
+# LinkedIn Credentials
+LINKEDIN_EMAIL=your_email@example.com
+LINKEDIN_PASSWORD=your_password
+
+# Job Search Settings
+JOB_KEYWORDS=Data Analyst,Business Analyst,Data Scientist
+EASY_APPLY_ONLY=true
+MAX_APPLICATIONS_PER_DAY=10
+
+# Browser Settings
+HEADLESS=false
+IMPLICIT_WAIT=10
+PAGE_LOAD_TIMEOUT=30

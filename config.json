@@ -1,0 +1,14 @@
+{
+  "linkedin_email": "mndzebelemalungisa@gmail.com",
+  "linkedin_password": "YOUR_PASSWORD_HERE",
+  "job_keywords": ["analyst", "data", "data analyst"],
+  "preferred_location": "United States of America",
+  "max_applications_per_day": 10,
+  "experience_years": 4,
+  "skills": ["data analysis"],
+  "education": ["BOA"],
+  "easy_apply_only": true,
+  "remote_preference": false,
+  "experience_level": "mid",
+  "company_size": "medium"
+}

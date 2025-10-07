@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "daily_application_limit": 10,
+  "optimal_times": {
+    "all_day": {
+      "start": "00:00",
+      "end": "23:59"
+    }
+  },
+  "weekdays_only": false,
+  "avoid_weekends": false,
+  "timezone": "UTC",
+  "random_delay_min": 30,
+  "random_delay_max": 300,
+  "cooldown_between_applications": 60,
+  "max_session_duration": 120,
+  "auto_pause_on_limit": true,
+  "resume_next_day": true
+}
