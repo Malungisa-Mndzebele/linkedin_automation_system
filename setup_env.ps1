@@ -5,7 +5,7 @@ Write-Host "Setting up LinkedIn automation environment variables..." -Foreground
 
 # Set LinkedIn credentials (replace with your actual credentials)
 $env:LINKEDIN_EMAIL = "your-email@example.com"
-$env:LINKEDIN_PASSWORD = "w3Y)CShf_Q58_@i"
+$env:LINKEDIN_PASSWORD = "your-password-here"
 
 # Set job search settings
 $env:JOB_KEYWORDS = "Data Analyst,Business Analyst,Data Scientist"

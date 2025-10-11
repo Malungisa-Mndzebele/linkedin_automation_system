@@ -52,7 +52,7 @@ echo Setting up LinkedIn automation environment variables...
 
 REM Set LinkedIn credentials (replace with your actual credentials)
 set LINKEDIN_EMAIL=your-email@example.com
-set LINKEDIN_PASSWORD=w3Y)CShf_Q58_@i
+set LINKEDIN_PASSWORD=your-password-here
 
 REM Set job search settings
 set JOB_KEYWORDS=Data Analyst,Business Analyst,Data Scientist
