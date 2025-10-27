@@ -1,14 +1,24 @@
 {
-  "linkedin_email": "your-email@example.com",
-  "linkedin_password": "your-password-here",
-  "job_keywords": ["analyst", "data", "data analyst"],
-  "preferred_location": "United States of America",
+  "email": "mndzebelemalungisa@gmail.com",
+  "password": "&DG/Q+T38Z_Tdn_",
+  "job_keywords": [
+    "analyst",
+    "data",
+    "data analyst"
+  ],
+  "location": "United States of America",
   "max_applications_per_day": 10,
-  "experience_years": 4,
-  "skills": ["data analysis"],
-  "education": ["BOA"],
   "easy_apply_only": true,
-  "remote_preference": false,
+  "experience_years": 4,
   "experience_level": "mid",
-  "company_size": "medium"
+  "company_size": "medium",
+  "skills": [
+    "data analysis"
+  ],
+  "education": [
+    "BOA"
+  ],
+  "preferred_industries": [],
+  "headless": false,
+  "remote_preference": false
 }

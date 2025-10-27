@@ -26,6 +26,8 @@ class LinkedInConfig(BaseModel):
     headless: bool = Field(default=False, description="Run browser in headless mode")
     implicit_wait: int = Field(default=10, description="Implicit wait time in seconds")
     page_load_timeout: int = Field(default=30, description="Page load timeout in seconds")
+    job_search_timeout: int = Field(default=30, description="Job search results timeout in seconds")
+    element_wait_timeout: int = Field(default=15, description="Element wait timeout in seconds")
     
     # URLs
     linkedin_login_url: str = Field(default="https://www.linkedin.com/login", description="LinkedIn login URL")

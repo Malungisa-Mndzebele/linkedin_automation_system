@@ -6,8 +6,7 @@ import sys
 import getpass
 from typing import Optional
 
-from linkedin_automation import LinkedInAutomation
-from config import LinkedInConfig, JobApplicationConfig
+from comprehensive_logging import setup_comprehensive_logging
 
 
 def setup_logging():
@@ -186,7 +185,7 @@ def main():
         # Get job listings
         logger.info("Retrieving job listings...")
         detailed_logger.info("Fetching job listings from search results")
-        jobs = automation.get_job_listings(max_jobs=10)
+        jobs = automation.get_job_listings(max_jobs=25)
         
         if not jobs:
             logger.warning("No job listings found")

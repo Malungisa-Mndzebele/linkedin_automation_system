@@ -15,6 +15,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
 from webdriver_manager.chrome import ChromeDriverManager
 
+from comprehensive_logging import AutomationLogger
 from config import LinkedInConfig, JobApplicationConfig
 
 
@@ -36,6 +37,7 @@ class LinkedInAutomation:
         self.driver: Optional[webdriver.Chrome] = None
         self.wait: Optional[WebDriverWait] = None
         self.logger = self._setup_logger()
+        self.comprehensive_logger = AutomationLogger()
         self.applications_today = 0
         
     def _setup_logger(self) -> logging.Logger:
@@ -83,10 +85,44 @@ class LinkedInAutomation:
         chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
         chrome_options.add_experimental_option('useAutomationExtension', False)
         
-        # Use webdriver-manager to automatically handle ChromeDriver
-        service = Service(ChromeDriverManager().install())
+        # Use ChromeDriver with smart fallback handling
+        service = None
+        local_chromedriver = os.path.join(os.getcwd(), "chromedriver", "chromedriver.exe")
         
-        driver = webdriver.Chrome(service=service, options=chrome_options)
+        # Try approaches in order of preference (webdriver-manager first for Chrome 141 compatibility)
+        approaches = [
+            ("webdriver-manager (latest)", lambda: Service(ChromeDriverManager().install())),
+            ("no service (selenium default)", lambda: None),
+            ("local chromedriver", lambda: Service(local_chromedriver) if os.path.exists(local_chromedriver) else None)
+        ]
+        
+        for approach_name, service_func in approaches:
+            try:
+                self.logger.info(f"Trying ChromeDriver approach: {approach_name}")
+                service = service_func()
+                
+                if service is None:
+                    # Try without explicit service
+                    driver = webdriver.Chrome(options=chrome_options)
+                else:
+                    # Try with explicit service
+                    driver = webdriver.Chrome(service=service, options=chrome_options)
+                
+                self.logger.info(f"✅ ChromeDriver {approach_name} successful")
+                break
+                
+            except Exception as e:
+                self.logger.warning(f"ChromeDriver {approach_name} failed: {e}")
+                if 'driver' in locals():
+                    try:
+                        driver.quit()
+                    except:
+                        pass
+                driver = None
+                continue
+        
+        if 'driver' not in locals() or driver is None:
+            raise Exception("All ChromeDriver approaches failed - please update Chrome or ChromeDriver")
         driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
         
         # Set timeouts
@@ -103,14 +139,19 @@ class LinkedInAutomation:
             True if session started successfully, False otherwise
         """
         try:
+            self.comprehensive_logger.log_step(1, "Browser Session Start", "STARTED")
             self.driver = self._setup_driver()
             self.wait = WebDriverWait(self.driver, self.config.implicit_wait)
             self.driver.maximize_window()
             self.logger.info("Browser session started successfully")
+            self.comprehensive_logger.log_browser_start(self.config.headless)
+            self.comprehensive_logger.log_step(1, "Browser Session Start", "COMPLETED")
             return True
             
         except Exception as e:
             self.logger.error(f"Failed to start browser session: {e}")
+            self.comprehensive_logger.log_error("Browser Session", str(e), "Failed to initialize Chrome WebDriver")
+            self.comprehensive_logger.log_step(1, "Browser Session Start", "FAILED")
             return False
     
     def login(self) -> bool:
@@ -122,9 +163,11 @@ class LinkedInAutomation:
         """
         if not self.driver:
             self.logger.error("Driver not initialized. Call start_session() first.")
+            self.comprehensive_logger.log_error("Login", "Driver not initialized", "Must call start_session() first")
             return False
             
         try:
+            self.comprehensive_logger.log_step(2, "LinkedIn Login", "STARTED")
             self.logger.info("Starting LinkedIn login process")
             self.driver.get(self.config.linkedin_login_url)
             
@@ -153,19 +196,29 @@ class LinkedInAutomation:
                     )
                 )
                 self.logger.info("Successfully logged into LinkedIn")
+                self.comprehensive_logger.log_login_attempt(self.config.email, True)
+                self.comprehensive_logger.log_step(2, "LinkedIn Login", "COMPLETED")
                 return True
                 
             except TimeoutException:
                 # Check if we're on a verification page or if login failed
                 if "challenge" in self.driver.current_url or "checkpoint" in self.driver.current_url:
                     self.logger.warning("LinkedIn requires additional verification")
+                    self.comprehensive_logger.log_error("Login", "Additional verification required", "LinkedIn challenge page detected")
+                    self.comprehensive_logger.log_step(2, "LinkedIn Login", "FAILED")
                     return False
                 else:
                     self.logger.error("Login failed - unable to verify successful login")
+                    self.comprehensive_logger.log_login_attempt(self.config.email, False)
+                    self.comprehensive_logger.log_error("Login", "Unable to verify successful login", "Timeout waiting for login confirmation")
+                    self.comprehensive_logger.log_step(2, "LinkedIn Login", "FAILED")
                     return False
                     
         except Exception as e:
             self.logger.error(f"Login failed with error: {e}")
+            self.comprehensive_logger.log_login_attempt(self.config.email, False)
+            self.comprehensive_logger.log_error("Login", str(e), "Exception during login process")
+            self.comprehensive_logger.log_step(2, "LinkedIn Login", "FAILED")
             return False
     
     def search_jobs(self, keywords: Optional[List[str]] = None) -> bool:
@@ -180,13 +233,16 @@ class LinkedInAutomation:
         """
         if not self.driver:
             self.logger.error("Driver not initialized. Call start_session() first.")
+            self.comprehensive_logger.log_error("Job Search", "Driver not initialized", "Must call start_session() first")
             return False
             
         try:
+            self.comprehensive_logger.log_step(3, "Job Search", "STARTED")
             keywords = keywords or self.config.job_keywords
             search_term = " ".join(keywords)
             
             self.logger.info(f"Searching for jobs with keywords: {search_term}")
+            self.comprehensive_logger.log_job_search(keywords, "", self.config.easy_apply_only)
             
             # Navigate to LinkedIn jobs with search parameters
             search_url = f"https://www.linkedin.com/jobs/search/?keywords={search_term.replace(' ', '%20')}"
@@ -198,27 +254,46 @@ class LinkedInAutomation:
             # Wait for page to load
             time.sleep(5)
             
-            # Wait for job listings to appear
-            try:
-                self.wait.until(
-                    EC.presence_of_element_located((By.CLASS_NAME, "jobs-search-results-list"))
-                )
-                self.logger.info("Job search results loaded successfully")
-            except TimeoutException:
-                # Try alternative selectors for different LinkedIn layouts
+            # Wait for job listings to appear with extended timeout and multiple attempts
+            job_loaded = False
+            selectors_to_try = [
+                (By.CLASS_NAME, "jobs-search-results-list"),
+                (By.CLASS_NAME, "jobs-search-results"),
+                (By.CSS_SELECTOR, ".scaffold-layout__list-container"),
+                (By.CSS_SELECTOR, "[data-test-id='job-search-results']"),
+                (By.CSS_SELECTOR, ".jobs-search__results-list"),
+                (By.CSS_SELECTOR, ".jobs-search-results__list")
+            ]
+            
+            for i, (by_method, selector) in enumerate(selectors_to_try):
                 try:
-                    self.wait.until(
-                        EC.presence_of_element_located((By.CLASS_NAME, "jobs-search-results"))
+                    self.logger.info(f"Waiting for job listings (attempt {i+1}/{len(selectors_to_try)}) with selector: {selector}")
+                    WebDriverWait(self.driver, self.config.job_search_timeout).until(
+                        EC.presence_of_element_located((by_method, selector))
                     )
-                    self.logger.info("Job search results loaded successfully (alternative layout)")
+                    self.logger.info(f"Job search results loaded successfully with selector: {selector}")
+                    self.comprehensive_logger.log_browser_operation("Job search results loaded", f"Selector: {selector}")
+                    job_loaded = True
+                    break
                 except TimeoutException:
-                    self.logger.warning("Job search results may not have loaded properly")
+                    self.logger.warning(f"Timeout with selector {selector}, trying next...")
+                    continue
+            
+            if not job_loaded:
+                self.logger.warning("Job search results may not have loaded properly - will attempt to extract anyway")
+                self.comprehensive_logger.log_error("Job Search", "Results may not have loaded", "All selectors timed out")
+                
+                # Wait a bit more for any dynamic content
+                time.sleep(5)
             
             self.logger.info("Job search completed successfully")
+            self.comprehensive_logger.log_step(3, "Job Search", "COMPLETED")
             return True
             
         except Exception as e:
             self.logger.error(f"Job search failed: {e}")
+            self.comprehensive_logger.log_error("Job Search", str(e), "Exception during job search")
+            self.comprehensive_logger.log_step(3, "Job Search", "FAILED")
             return False
     
     def _apply_easy_apply_filter(self) -> bool:
@@ -246,7 +321,7 @@ class LinkedInAutomation:
             self.logger.error(f"Failed to apply Easy Apply filter: {e}")
             return False
     
-    def get_job_listings(self, max_jobs: int = 10) -> List[Dict[str, Any]]:
+    def get_job_listings(self, max_jobs: int = 25) -> List[Dict[str, Any]]:
         """
         Get list of available job listings from current search results
         
@@ -262,8 +337,14 @@ class LinkedInAutomation:
             
         jobs = []
         try:
-            # Scroll to load more jobs
-            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            # Scroll multiple times to load more jobs
+            self.logger.info("Scrolling to load more job listings...")
+            for scroll_attempt in range(3):
+                self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                time.sleep(3)  # Wait longer for dynamic content to load
+                self.logger.info(f"Scroll attempt {scroll_attempt + 1}/3 completed")
+            
+            # Wait a bit more for any lazy-loaded content
             time.sleep(2)
             
             # Try multiple selectors for job cards (LinkedIn has different layouts)
@@ -271,7 +352,10 @@ class LinkedInAutomation:
                 "//div[contains(@class, 'job-card-container')]",
                 "//div[contains(@class, 'jobs-search-results__list-item')]",
                 "//li[contains(@class, 'jobs-search-results__list-item')]",
-                "//div[contains(@class, 'job-card-list')]"
+                "//div[contains(@class, 'job-card-list')]",
+                "//div[contains(@class, 'job-card')]",
+                "//li[contains(@class, 'job-card')]",
+                "//div[contains(@class, 'jobs-search-results__list')]//div[contains(@class, 'job-card')]"
             ]
             
             job_elements = []
@@ -284,6 +368,7 @@ class LinkedInAutomation:
             
             if not job_elements:
                 self.logger.warning("No job elements found with any selector")
+                self.comprehensive_logger.log_error("Job Extraction", "No job elements found", "All selectors failed")
                 return []
             
             for i, job_element in enumerate(job_elements[:max_jobs]):
@@ -294,6 +379,7 @@ class LinkedInAutomation:
                     
                     if not title or not company:
                         self.logger.warning(f"Could not extract title/company from job {i+1}")
+                        self.comprehensive_logger.log_error("Job Extraction", f"Could not extract title/company from job {i+1}", "Missing job information")
                         # Debug: log the HTML structure for troubleshooting
                         self._debug_job_element(job_element, i+1)
                         continue
@@ -310,9 +396,11 @@ class LinkedInAutomation:
                     
                     jobs.append(job_info)
                     self.logger.info(f"Job {i+1}: {title} at {company} - Easy Apply: {has_easy_apply}")
+                    self.comprehensive_logger.log_job_found(i+1, title, company, has_easy_apply)
                     
                 except Exception as e:
                     self.logger.warning(f"Could not extract info from job {i+1}: {e}")
+                    self.comprehensive_logger.log_error("Job Extraction", str(e), f"Failed to extract info from job {i+1}")
                     continue
                     
             self.logger.info(f"Retrieved {len(jobs)} job listings")
@@ -423,18 +511,22 @@ class LinkedInAutomation:
         """
         if not self.driver:
             self.logger.error("Driver not initialized")
+            self.comprehensive_logger.log_error("Job Application", "Driver not initialized", "Must call start_session() first")
             return False
             
         if not job_info.get('has_easy_apply', False):
             self.logger.warning(f"Job '{job_info.get('title', 'Unknown')}' does not have Easy Apply")
+            self.comprehensive_logger.log_decision("Application Skip", f"No Easy Apply for '{job_info.get('title', 'Unknown')}'", "Job does not support Easy Apply")
             return False
             
         if self.applications_today >= self.config.max_applications_per_day:
             self.logger.warning("Daily application limit reached")
+            self.comprehensive_logger.log_decision("Application Limit", "Daily limit reached", f"Max applications: {self.config.max_applications_per_day}")
             return False
             
         try:
             self.logger.info(f"Applying to: {job_info['title']} at {job_info['company']}")
+            self.comprehensive_logger.log_job_application_attempt(self.applications_today + 1, job_info['title'], job_info['company'])
             
             # Find and click Easy Apply button with multiple selectors
             easy_apply_button = None
@@ -453,6 +545,7 @@ class LinkedInAutomation:
             
             if not easy_apply_button:
                 self.logger.warning(f"Could not find Easy Apply button for {job_info['title']}")
+                self.comprehensive_logger.log_job_application_result(self.applications_today + 1, job_info['title'], job_info['company'], False, "Easy Apply button not found")
                 return False
             
             # Scroll to button and click
@@ -469,13 +562,16 @@ class LinkedInAutomation:
             if success:
                 self.applications_today += 1
                 self.logger.info(f"Successfully applied to {job_info['title']}")
+                self.comprehensive_logger.log_job_application_result(self.applications_today, job_info['title'], job_info['company'], True)
             else:
                 self.logger.warning(f"Failed to complete application for {job_info['title']}")
+                self.comprehensive_logger.log_job_application_result(self.applications_today + 1, job_info['title'], job_info['company'], False, "Application form handling failed")
                 
             return success
             
         except Exception as e:
             self.logger.error(f"Failed to apply to job: {e}")
+            self.comprehensive_logger.log_job_application_result(self.applications_today + 1, job_info['title'], job_info['company'], False, str(e))
             return False
     
     def _handle_application_form(self) -> bool:
