@@ -264,11 +264,13 @@ class LinkedInAutomation:
                 (By.CSS_SELECTOR, ".jobs-search__results-list"),
                 (By.CSS_SELECTOR, ".jobs-search-results__list")
             ]
-            
+            # Prefer the instance wait (allows tests to inject a mock). Fall back to a fresh WebDriverWait.
+            wait = self.wait or WebDriverWait(self.driver, self.config.job_search_timeout)
+
             for i, (by_method, selector) in enumerate(selectors_to_try):
                 try:
                     self.logger.info(f"Waiting for job listings (attempt {i+1}/{len(selectors_to_try)}) with selector: {selector}")
-                    WebDriverWait(self.driver, self.config.job_search_timeout).until(
+                    wait.until(
                         EC.presence_of_element_located((by_method, selector))
                     )
                     self.logger.info(f"Job search results loaded successfully with selector: {selector}")
