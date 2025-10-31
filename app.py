@@ -1,4 +1,4 @@
-"""
+python3.13 -m pip install schedule"""
 LinkedIn Job Application Automation - Web Application
 Modern web UI for managing automatic job applications
 """
@@ -16,7 +16,7 @@ from config import LinkedInConfig, JobApplicationConfig
 from linkedin_automation import LinkedInAutomation
 from comprehensive_logging import setup_comprehensive_logging
 from database import DatabaseManager
-from simple_scheduler import SimpleScheduler
+from scheduler import AutomationScheduler
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'linkedin-automation-secret-key-2025'
@@ -27,6 +27,7 @@ automation_instance = None
 automation_thread = None
 automation_running = False
 automation_stats = {}
+scheduler_instance = None
 
 # Clear logs on startup
 def clear_logs_on_startup():
@@ -53,7 +54,7 @@ clear_logs_on_startup()
 
 # Initialize components
 db_manager = DatabaseManager()
-scheduler = SimpleScheduler()
+scheduler = AutomationScheduler()
 comprehensive_logger = setup_comprehensive_logging("INFO")
 
 
