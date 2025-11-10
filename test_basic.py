@@ -13,10 +13,10 @@ def test_imports():
     """Test that all modules can be imported"""
     try:
         from config import LinkedInConfig, JobApplicationConfig
-        print("✅ Config imports successful")
+        print("[OK] Config imports successful")
         return True
     except ImportError as e:
-        print(f"❌ Config import failed: {e}")
+        print(f"[ERROR] Config import failed: {e}")
         return False
 
 def test_comprehensive_logging():
@@ -25,10 +25,10 @@ def test_comprehensive_logging():
         from comprehensive_logging import AutomationLogger
         logger = AutomationLogger("INFO")
         logger.log_session_start()
-        print("✅ Comprehensive logging test successful")
+        print("[OK] Comprehensive logging test successful")
         return True
     except Exception as e:
-        print(f"❌ Comprehensive logging test failed: {e}")
+        print(f"[ERROR] Comprehensive logging test failed: {e}")
         return False
 
 def test_database():
@@ -66,10 +66,10 @@ def test_database():
             assert retrieved_job.job_title == "Test Job"
             assert retrieved_job.company == "Test Company"
         
-        print("✅ Database test successful")
+        print("[OK] Database test successful")
         return True
     except Exception as e:
-        print(f"❌ Database test failed: {e}")
+        print(f"[ERROR] Database test failed: {e}")
         return False
 
 def test_linkedin_automation():
@@ -93,10 +93,10 @@ def test_linkedin_automation():
         # Test basic functionality
         stats = automation.get_application_stats()
         
-        print("✅ LinkedIn automation test successful")
+        print("[OK] LinkedIn automation test successful")
         return True
     except Exception as e:
-        print(f"❌ LinkedIn automation test failed: {e}")
+        print(f"[ERROR] LinkedIn automation test failed: {e}")
         return False
 
 def test_flask_app():
@@ -104,22 +104,22 @@ def test_flask_app():
     try:
         # Check if Flask is available
         import flask
-        print(f"✅ Flask available: {flask.__version__}")
+        print(f"[OK] Flask available: {flask.__version__}")
         
         # Try to import the app
         from app import app
-        print("✅ Flask app import successful")
+        print("[OK] Flask app import successful")
         
         # Test basic app configuration
         assert app.config['SECRET_KEY'] is not None
-        print("✅ Flask app configuration test successful")
+        print("[OK] Flask app configuration test successful")
         
         return True
     except ImportError as e:
-        print(f"❌ Flask not available: {e}")
+        print(f"[ERROR] Flask not available: {e}")
         return False
     except Exception as e:
-        print(f"❌ Flask app test failed: {e}")
+        print(f"[ERROR] Flask app test failed: {e}")
         return False
 
 def test_web_templates():
@@ -135,13 +135,13 @@ def test_web_templates():
         
         for template in template_files:
             if not os.path.exists(template):
-                print(f"❌ Missing template: {template}")
+                print(f"[ERROR] Missing template: {template}")
                 return False
-            print(f"✅ Template exists: {template}")
+            print(f"[OK] Template exists: {template}")
         
         return True
     except Exception as e:
-        print(f"❌ Template test failed: {e}")
+        print(f"[ERROR] Template test failed: {e}")
         return False
 
 def test_static_files():
@@ -156,13 +156,13 @@ def test_static_files():
         
         for static_file in static_files:
             if not os.path.exists(static_file):
-                print(f"❌ Missing static file: {static_file}")
+                print(f"[ERROR] Missing static file: {static_file}")
                 return False
-            print(f"✅ Static file exists: {static_file}")
+            print(f"[OK] Static file exists: {static_file}")
         
         return True
     except Exception as e:
-        print(f"❌ Static files test failed: {e}")
+        print(f"[ERROR] Static files test failed: {e}")
         return False
 
 def test_configuration_files():
@@ -170,19 +170,19 @@ def test_configuration_files():
     try:
         config_files = [
             'requirements_web.txt',
-            'start_web_app.py',
-            'WEB_APPLICATION_GUIDE.md'
+            'app.py',
+            'README.md'
         ]
         
         for config_file in config_files:
             if not os.path.exists(config_file):
-                print(f"❌ Missing config file: {config_file}")
+                print(f"[ERROR] Missing config file: {config_file}")
                 return False
-            print(f"✅ Config file exists: {config_file}")
+            print(f"[OK] Config file exists: {config_file}")
         
         return True
     except Exception as e:
-        print(f"❌ Configuration files test failed: {e}")
+        print(f"[ERROR] Configuration files test failed: {e}")
         return False
 
 def run_basic_tests():
@@ -206,15 +206,15 @@ def run_basic_tests():
     total = len(tests)
     
     for test_name, test_func in tests:
-        print(f"\n🧪 Running {test_name}...")
+        print(f"\n[TEST] Running {test_name}...")
         try:
             if test_func():
                 passed += 1
-                print(f"✅ {test_name} PASSED")
+                print(f"[OK] {test_name} PASSED")
             else:
-                print(f"❌ {test_name} FAILED")
+                print(f"[ERROR] {test_name} FAILED")
         except Exception as e:
-            print(f"❌ {test_name} FAILED with exception: {e}")
+            print(f"[ERROR] {test_name} FAILED with exception: {e}")
     
     print("\n" + "=" * 60)
     print("TEST SUMMARY")
@@ -223,9 +223,9 @@ def run_basic_tests():
     print(f"Success rate: {(passed/total*100):.1f}%")
     
     if passed == total:
-        print("🎉 ALL TESTS PASSED! Web application is ready to use.")
+        print("[SUCCESS] ALL TESTS PASSED! Web application is ready to use.")
     else:
-        print("⚠️ Some tests failed. Check the output above for details.")
+        print("[WARNING] Some tests failed. Check the output above for details.")
     
     return passed == total
 

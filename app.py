@@ -1,4 +1,4 @@
-python3.13 -m pip install schedule"""
+"""
 LinkedIn Job Application Automation - Web Application
 Modern web UI for managing automatic job applications
 """
@@ -41,13 +41,13 @@ def clear_logs_on_startup():
         if os.path.exists(log_dir):
             try:
                 shutil.rmtree(log_dir)
-                print(f"✅ Cleared {log_dir} directory")
+                print(f"[OK] Cleared {log_dir} directory")
             except Exception as e:
-                print(f"⚠️ Could not clear {log_dir}: {e}")
+                print(f"[WARNING] Could not clear {log_dir}: {e}")
     
     # Recreate logs directory
     os.makedirs('logs', exist_ok=True)
-    print("✅ Logs cleared and ready for new session")
+    print("[OK] Logs cleared and ready for new session")
 
 # Clear logs on startup
 clear_logs_on_startup()

@@ -108,7 +108,7 @@ class LinkedInAutomation:
                     # Try with explicit service
                     driver = webdriver.Chrome(service=service, options=chrome_options)
                 
-                self.logger.info(f"✅ ChromeDriver {approach_name} successful")
+                self.logger.info(f"[OK] ChromeDriver {approach_name} successful")
                 break
                 
             except Exception as e:
