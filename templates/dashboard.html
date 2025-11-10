@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Automation Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-linkedin"></i> LinkedIn Automation
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/config">
+                            <i class="fas fa-cog"></i> Configuration
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/monitor">
+                            <i class="fas fa-eye"></i> Monitor
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/jobs">
+                            <i class="fas fa-briefcase"></i> Jobs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logs">
+                            <i class="fas fa-file-alt"></i> Logs
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Status Banner -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div id="status-banner" class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="status-text">Automation is ready to start</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Cards -->
+        <div class="row">
+            <!-- Quick Start Card -->
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-play-circle"></i> Quick Start
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Start the LinkedIn job application automation with your current configuration.</p>
+                        <div class="d-grid gap-2">
+                            <button id="start-automation" class="btn btn-success btn-lg" disabled>
+                                <i class="fas fa-play"></i> Start Automation
+                            </button>
+                            <button id="stop-automation" class="btn btn-danger btn-lg" disabled>
+                                <i class="fas fa-stop"></i> Stop Automation
+                            </button>
+                        </div>
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-clock"></i> Last run: <span id="last-run">Never</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Card -->
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-bar"></i> Today's Statistics
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <h3 class="text-primary" id="jobs-found">0</h3>
+                                <p class="text-muted">Jobs Found</p>
+                            </div>
+                            <div class="col-6">
+                                <h3 class="text-success" id="applications-sent">0</h3>
+                                <p class="text-muted">Applications Sent</p>
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <h3 class="text-info" id="success-rate">0%</h3>
+                                <p class="text-muted">Success Rate</p>
+                            </div>
+                            <div class="col-6">
+                                <h3 class="text-warning" id="errors-count">0</h3>
+                                <p class="text-muted">Errors</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Activity -->
+        <div class="row">
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-activity"></i> Current Activity
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="current-activity" class="text-center text-muted">
+                            <i class="fas fa-pause-circle fa-3x"></i>
+                            <p class="mt-2">No active automation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Applications -->
+        <div class="row">
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-history"></i> Recent Applications
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="recent-applications">
+                            <p class="text-muted text-center">No recent applications</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row">
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-bolt"></i> Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-2">
+                                <a href="/config" class="btn btn-outline-primary w-100">
+                                    <i class="fas fa-cog"></i> Configure Settings
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <a href="/monitor" class="btn btn-outline-info w-100">
+                                    <i class="fas fa-eye"></i> Live Monitor
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <a href="/jobs" class="btn btn-outline-success w-100">
+                                    <i class="fas fa-briefcase"></i> View Jobs
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <a href="/logs" class="btn btn-outline-warning w-100">
+                                    <i class="fas fa-file-alt"></i> View Logs
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
